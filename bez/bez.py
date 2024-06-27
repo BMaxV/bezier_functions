@@ -636,7 +636,7 @@ class EasySpline:
         # we don't actually need to do that.
         self.controlpoints = controlpoints
     
-    def interpolate(self,steps=5,order=1):
+    def interpolate(self,steps=10,order=1):
         """idk if this works for more than 1"""
         # so.what we are doing, specifically.
         # well, the order specifices continuity types
@@ -670,25 +670,16 @@ class EasySpline:
             inter_c = 0
             while inter_c < steps:
                 
-                # how about the point definitions is
+                regular = (inter_c/(steps-1))
+                regular_inv = 1-(inter_c/(steps-1))
                 
-                # p1 + diff and that's decreasing the closer I get
-                # and the other ons i p2-diff and that's increasing the closer I get.
-                # I think that's what I'm already doing?
-                # but it still can't be done on the next first step.
+                p1_inf = p1 + diff1 * regular * regular_inv
+                p2_inf = p2 - diff2 * regular * regular_inv
                 
-                inf1 = (1-(inter_c/(steps-1)))
-                inf2 = (inter_c/(steps-1))
+                sine_fac_down = (math.cos(regular*math.pi)+1)/2
+                sine_fac_up = (math.sin(regular*math.pi - math.pi/2)+1)/2
                 
-                pr = p1 * inf1 + p2 * inf2
-                div1 = diff1 * inf1 * inf2
-                print(diff1,div1)
-                pr += div1 
-                div2 = diff2 * inf2 * inf1
-                pr -= div2
-                
-                
-                print(inter_c,p1,p2,pr)
+                pr = p1_inf * sine_fac_down + p2_inf * sine_fac_up 
                 
                 output_points.append(pr)
                 inter_c += 1
@@ -734,11 +725,11 @@ def test_easy_spline():
     p1 = vector.Vector(0,0,0)
     p2 = vector.Vector(1,1,0)
     p3 = vector.Vector(2,0,0)
-    p4 = vector.Vector(3,1,0)
-    p5 = vector.Vector(4,0,0)
+    p4 = vector.Vector(3,0,0)
+    p5 = vector.Vector(4,0.5,0)
     p6 = vector.Vector(5,-1,0)
     
-    cps = [p1,p2,p3,p4,p5]#,p6]
+    cps = [p1,p2,p3,p4,p5,p6]
     ES = EasySpline(cps)
     
     geoml = []
