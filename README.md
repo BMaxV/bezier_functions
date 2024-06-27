@@ -17,4 +17,4 @@ that splines are actually good for. so... "kind of the same thing"
 
 but not actually splines. I think.
 
-![pic2](EZ_spline_test.svg)
+![pic2](EZ_Spline_test.svg)
