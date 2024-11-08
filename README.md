@@ -38,4 +38,4 @@ So
 lightblue * darkblue + yellow * orange  => red
 ```
 
-![pic3][interpolation_demonstration.svg]
+![pic3](interpolation_demonstration.svg)
