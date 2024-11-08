@@ -412,24 +412,57 @@ class EasySpline:
             diff1 = self.lists_of_order_vectors[order][point_c]
             diff2 = self.lists_of_order_vectors[order][point_c+1]
             inter_c = 0
+            
+            # for my interpolation steps between two points
             while inter_c < steps:
                 
+                # get the linear increase and decrease
                 regular = (inter_c/(steps-1))
-                regular_inv = 1-(inter_c/(steps-1))
+                regular_inv = 1 - regular
                 
+                # multiplying them means I get no "diff" influence
+                # at the ends and some influence in the middle.
                 p1_inf = p1 + diff1 * regular * regular_inv
                 p2_inf = p2 - diff2 * regular * regular_inv
                 
-                sine_fac_down = (math.cos(regular*math.pi)+1)/2
-                sine_fac_up = (math.sin(regular*math.pi - math.pi/2)+1)/2
+                # and then also, since that influence would be...
+                # well, it wouldn't be as smooth as a sine curve,
+                # so I'm using the sine curve, to increase the smoothing
+                sine_fac_down = (math.cos(regular*math.pi) + 1) / 2
+                sine_fac_up   = (math.sin(regular*math.pi - math.pi/2) + 1) / 2
                 
+                # and also, the sine curve starts / ends on 1 or 0,
+                # because of the offsets that I have chosen.
                 pr = p1_inf * sine_fac_down + p2_inf * sine_fac_up 
                 
                 output_points.append(pr)
                 inter_c += 1
+                
             point_c += 1 
         return output_points
 
+def interpolation_math(my_value,full_range,p1,p2,diff1,diff2):
+	# get the linear increase and decrease
+	regular = (my_value/full_range)
+	regular_inv = 1 - regular
+	
+	# multiplying them means I get no "diff" influence
+	# at the ends and some influence in the middle.
+	p1_inf = p1 + diff1 * regular * regular_inv
+	p2_inf = p2 - diff2 * regular * regular_inv
+	
+	# and then also, since that influence would be...
+	# well, it wouldn't be as smooth as a sine curve,
+	# so I'm using the sine curve, to increase the smoothing
+	sine_fac_down = (math.cos(regular*math.pi) + 1) / 2
+	sine_fac_up   = (math.sin(regular*math.pi - math.pi/2) + 1) / 2
+	
+	# and also, the sine curve starts / ends on 1 or 0,
+	# because of the offsets that I have chosen.
+	pr = p1_inf * sine_fac_down + p2_inf * sine_fac_up 
+	
+	return pr
+	
 def build_derivatives(diffs):
     new_list = []
     point_c = 0
